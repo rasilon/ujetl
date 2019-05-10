@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+
+JOBNAME=${1:-undef}
+if [ -z "${JOBNAME}" ]
+then
+    echo "Job name not specified"
+    exit 1
+fi
+if [ ! -e "/etc/ujetl/${JOBNAME}_config_live.xml" ]
+then
+    echo "Could not find config file for $JOBNAME"
+    exit 2
+fi
+
+LOG_PROPS=/etc/ujetl/copying_defaults_log4j.xml
+if [ -e "/etc/ujetl/${JOBNAME}_log4j.xml" ]
+then
+    echo Using log config "/etc/ujetl/${JOBNAME}_log4j.xml"
+    LOG_PROPS="/etc/ujetl/${JOBNAME}_log4j.xml"
+else
+    echo Using default logging.
+fi
+test -e "$LOG_PROPS"
+
+
+LOCKFILE=/tmp/"${JOBNAME}"_copying.lock
+
+/usr/bin/lockfile -r ${RETRIES:-"1"} $LOCKFILE || exit 1
+
+trap "rm -f $LOCKFILE; exit" INT TERM EXIT
+
+/usr/bin/java \
+    -Xms1g \
+    -Xmx2g   \
+    -jar target/CopyingApp-2.0.0-jar-with-dependencies.jar \
+    --log4j "$LOG_PROPS" \
+    --config "/etc/ujetl/${JOBNAME}_config_live.xml"
+
+if [ -e "/etc/ujetl/${JOBNAME}_post.sql" ]
+then
+    psql -f "/etc/ujetl/${JOBNAME}_post.sql" data_hub
+fi
+
+rm -f $LOCKFILE
