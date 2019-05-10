@@ -50,6 +50,9 @@ public class CopyingApp {
     CopyingAppCommandParser cli;
     String jobName;
     Integer blockSize = 100;
+
+
+
     public CopyingApp(CopyingAppCommandParser cli) {
         this.cli = cli;
 
@@ -107,28 +110,26 @@ public class CopyingApp {
 
             long startTime = System.nanoTime();
 
-            log.info(String.format("%s - Tables are:",jobName));
-            Object prop = config.getProperty("tables.table.name");
+            log.info(String.format("%s - Jobs are:",jobName));
+            Object prop = config.getProperty("jobs.job.name");
             if(prop instanceof Collection) {
                 int numTabs = ((Collection<?>) prop).size();
-                log.info(String.format("%s - Number of tables: %s",jobName, new Integer(numTabs)));
+                log.info(String.format("%s - Number of jobs: %s",jobName, new Integer(numTabs)));
                 for(int i=0; i < numTabs; i++ ) {
-                    String tabName = config.getString("tables.table("+i+").name");
-                    String tabKey = config.getString("tables.table("+i+").key");
-                    String tabSelect = config.getString("tables.table("+i+").select");
-                    String tabInsert = config.getString("tables.table("+i+").insert");
-                    //processTable(sConn,dConn,tabName,tabKey,tabSelect,tabInsert,nRowsToLog);
+                    String tabName = config.getString("jobs.job("+i+").name");
+                    String tabKey = config.getString("jobs.job("+i+").key");
+                    String tabSelect = config.getString("jobs.job("+i+").select");
+                    String tabInsert = config.getString("jobs.job("+i+").insert");
                     Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize);
                     j.start();
                     j.join();
 
                 }
             } else if(prop instanceof String) {
-                String tabName = config.getString("tables.table.name");
-                String tabKey = config.getString("tables.table.key");
-                String tabSelect = config.getString("tables.table.select");
-                String tabInsert = config.getString("tables.table.insert");
-                //processTable(sConn,dConn,tabName,tabKey,tabSelect,tabInsert,nRowsToLog);
+                String tabName = config.getString("jobs.job.name");
+                String tabKey = config.getString("jobs.job.key");
+                String tabSelect = config.getString("jobs.job.select");
+                String tabInsert = config.getString("jobs.job.insert");
                 Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize);
                 j.start();
                 j.join();
