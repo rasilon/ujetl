@@ -187,7 +187,7 @@ public class Job extends Thread {
             Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
                 public void uncaughtException(Thread th, Throwable ex) {
                     threadsExit.set(true);
-                    log.error("Uncaught exception: " + ex);
+                    log.error("Job exiting: Caught exception from subthread: " + ex);
                     System.exit(1);
                 }
             };
