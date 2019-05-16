@@ -50,6 +50,7 @@ public class Job extends Thread {
 
         resultBuffer = new ArrayBlockingQueue<List<String>>( 3 * blockSize);
         producerLive = new AtomicBoolean(true);
+        this.setName(String.format("%s-%s-Manager",jobName,name));
     }
 
     int arraySum(int[] arr) {
@@ -69,6 +70,7 @@ public class Job extends Thread {
         public Producer(ResultSet src,BlockingQueue q) {
             this.src = src;
             this.q = q;
+            this.setName(String.format("%s-%s-Consumer",jobName,name));
         }
         public void run() {
             try {
@@ -114,6 +116,7 @@ public class Job extends Thread {
         public Consumer(PreparedStatement insertStatement,BlockingQueue q) {
             this.insertStatement = insertStatement;
             this.q = q;
+            this.setName(String.format("%s-%s-Consumer",jobName,name));
         }
         public void run() {
             try {
