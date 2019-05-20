@@ -154,8 +154,8 @@ public class Job extends Thread {
                         dConn.commit();
                         log.info(String.format("%s - Inserted %s of %s notified rows into %s so far",
                             jobName,
-                            rowsInserted,
                             rowNum,
+                            rowsInserted,
                             name));
                     }
                 }
