@@ -8,6 +8,9 @@ MAINTAINER Derry Hamilton <derryh@postcodelottery.co.uk>
 # Install up-to-date epel rpm repository
 RUN yum -y install epel-release
 
+# Install java first, to get a sensible one.
+RUN yum -y install java-1.8.0-openjdk-devel
+
 # Install various packages to get compile environment
 RUN yum -y groupinstall 'Development Tools'
 

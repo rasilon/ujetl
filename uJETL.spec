@@ -25,9 +25,9 @@ true
 mkdir -p $RPM_BUILD_ROOT/usr/share/ujetl/lib $RPM_BUILD_ROOT/etc/ujetl $RPM_BUILD_ROOT/usr/bin
 cp target/CopyingApp-*-jar-with-dependencies.jar $RPM_BUILD_ROOT/usr/share/ujetl/lib/CopyingApp.jar
 cp install_extra/run_copying_job $RPM_BUILD_ROOT/usr/bin
-cp install_extra/copying_defaults_log4j.properties $RPM_BUILD_ROOT/etc/ujetl
+cp install_extra/copying_defaults_log4j.xml $RPM_BUILD_ROOT/etc/ujetl
 
 %files
 /usr/share/ujetl/lib/CopyingApp.jar
 /usr/bin/run_copying_job
-/etc/ujetl/copying_defaults_log4j.properties
+/etc/ujetl/copying_defaults_log4j.xml

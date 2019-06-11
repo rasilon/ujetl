@@ -12,11 +12,11 @@ then
     exit 2
 fi
 
-LOG_PROPS=/etc/ujetl/copying_defaults_log4j.properties
-if [ -e "/etc/ujetl/${JOBNAME}_log4j.properties" ]
+LOG_PROPS=/etc/ujetl/copying_defaults_log4j.xml
+if [ -e "/etc/ujetl/${JOBNAME}_log4j.xml" ]
 then
-    echo Using log config "/etc/ujetl/${JOBNAME}_log4j.properties"
-    LOG_PROPS="/etc/ujetl/${JOBNAME}_log4j.properties"
+    echo Using log config "/etc/ujetl/${JOBNAME}_log4j.xml"
+    LOG_PROPS="/etc/ujetl/${JOBNAME}_log4j.xml"
 else
     echo Using default logging.
 fi
