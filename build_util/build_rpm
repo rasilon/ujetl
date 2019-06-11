@@ -7,6 +7,6 @@ cd build2
 
 SPEC=$(ls *.spec)
 VER=$(grep Version $SPEC | awk '{print $2}')
-tar cvf $HOME/rpmbuild/SOURCES/DataMigrator-${VER}.tar.gz --show-transformed --transform="s/^\./PPL_DataMigrationTools-${VER}/"  .
+tar cvf $HOME/rpmbuild/SOURCES/uJETL-${VER}.tar.gz --show-transformed --transform="s/^\./uJETL-${VER}/"  .
 rpmbuild -ba $SPEC
-cp /root/rpmbuild/RPMS/x86_64/PPL_DataMigrationTools-* /root/build/
+cp /root/rpmbuild/RPMS/x86_64/* /root/build/
