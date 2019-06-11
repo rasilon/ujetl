@@ -31,7 +31,7 @@ fi
     -Xms1g \
     -Xmx2g   \
     -cp /usr/share/ujetl/lib/CopyingApp.jar \
-    com.ujetl.data.CopyingApp \
+    com.rasilon.ujetl.CopyingApp \
     --log4j "$LOG_PROPS" \
     --config "/etc/ujetl/${JOBNAME}_config_live.xml"
 
