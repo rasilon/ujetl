@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+cd /root
+cp -Rv build build2
+cd build2
+
+SPEC=$(ls *.spec)
+VER=$(grep Version $SPEC | awk '{print $2}')
+tar cvf $HOME/rpmbuild/SOURCES/DataMigrator-${VER}.tar.gz --show-transformed --transform="s/^\./PPL_DataMigrationTools-${VER}/"  .
+rpmbuild -ba $SPEC
+cp /root/rpmbuild/RPMS/x86_64/PPL_DataMigrationTools-* /root/build/

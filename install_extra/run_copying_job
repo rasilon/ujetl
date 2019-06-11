@@ -1,0 +1,38 @@
+#!/bin/bash
+
+JOBNAME=${1:-undef}
+if [ -z "${JOBNAME}" ]
+then
+    echo "Job name not specified"
+    exit 1
+fi
+if [ ! -e "/etc/ujetl/${JOBNAME}_config_live.xml" ]
+then
+    echo "Could not find config file for $JOBNAME"
+    exit 2
+fi
+
+LOG_PROPS=/etc/ujetl/copying_defaults_log4j.properties
+if [ -e "/etc/ujetl/${JOBNAME}_log4j.properties" ]
+then
+    echo Using log config "/etc/ujetl/${JOBNAME}_log4j.properties"
+    LOG_PROPS="/etc/ujetl/${JOBNAME}_log4j.properties"
+else
+    echo Using default logging.
+fi
+
+#LOCKFILE=/tmp/"${JOBNAME}"_copying.lock
+
+#/usr/bin/lockfile -r ${RETRIES:-"1"} $LOCKFILE || exit 1
+
+#trap "rm -f $LOCKFILE; exit" INT TERM EXIT
+
+/usr/bin/java \
+    -Xms1g \
+    -Xmx2g   \
+    -cp /usr/share/ujetl/lib/CopyingApp.jar \
+    com.ujetl.data.CopyingApp \
+    --log4j "$LOG_PROPS" \
+    --config "/etc/ujetl/${JOBNAME}_config_live.xml"
+
+#rm -f $LOCKFILE
