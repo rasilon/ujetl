@@ -3,7 +3,7 @@
 # VERSION       0.0.1
 
 FROM centos:centos7
-MAINTAINER Derry Hamilton <derryh@postcodelottery.co.uk>
+MAINTAINER Derry Hamilton <derryh@rasilon.net>
 
 # Install up-to-date epel rpm repository
 RUN yum -y install epel-release
