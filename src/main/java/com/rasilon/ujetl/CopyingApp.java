@@ -108,6 +108,17 @@ public class CopyingApp {
                 log.info(String.format("%s - Setting Row count interval to default of 100 rows.",jobName));
             }
 
+		  	Integer pollTimeout = null;
+	  		try {
+  				pollTimeout = new Integer(config.getString("nRowsToLog"));
+				log.info(String.format("%s - Setting Poll timeout to %s milliseconds", jobName, pollTimeout));
+			} catch(Exception e) {
+				pollTimeout = new Integer(1000); // If we don't have a new setting, use the old default
+				log.info(String.format("%s - Setting poll timeout to default of 1 second.",jobName));
+			}
+
+
+
             long startTime = System.nanoTime();
 
             log.info(String.format("%s - Jobs are:",jobName));
@@ -120,7 +131,7 @@ public class CopyingApp {
                     String tabKey = config.getString("jobs.job("+i+").key");
                     String tabSelect = config.getString("jobs.job("+i+").select");
                     String tabInsert = config.getString("jobs.job("+i+").insert");
-                    Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize);
+                    Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize,pollTimeout);
                     j.start();
                     j.join();
 
@@ -130,7 +141,7 @@ public class CopyingApp {
                 String tabKey = config.getString("jobs.job.key");
                 String tabSelect = config.getString("jobs.job.select");
                 String tabInsert = config.getString("jobs.job.insert");
-                Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize);
+                Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize,pollTimeout);
                 j.start();
                 j.join();
             } else {

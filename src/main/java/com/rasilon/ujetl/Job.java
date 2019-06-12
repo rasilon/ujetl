@@ -31,13 +31,14 @@ public class Job extends Thread {
     String insert;
     Integer nRowsToLog;
     Integer blockSize;
+    Integer pollTimeout;
 
     BlockingQueue<List<String>> resultBuffer;
     AtomicBoolean producerLive;
     AtomicBoolean threadsExit = new AtomicBoolean(false);;
 
 
-    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,Integer nRowsToLog,Integer blockSize) {
+    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,Integer nRowsToLog,Integer blockSize,Integer pollTimeout) {
         this.sConn = sConn;
         this.dConn = dConn;
         this.name = name;
@@ -47,6 +48,7 @@ public class Job extends Thread {
         this.insert = insert;
         this.nRowsToLog = nRowsToLog;
         this.blockSize = blockSize;
+        this.pollTimeout = pollTimeout;
 
         resultBuffer = new ArrayBlockingQueue<List<String>>( 3 * blockSize);
         producerLive = new AtomicBoolean(true);
@@ -124,7 +126,7 @@ public class Job extends Thread {
                 long rowsInserted = 0;
 
                 while(true) {
-                    List<String> row = q.poll(100,java.util.concurrent.TimeUnit.MILLISECONDS);
+                    List<String> row = q.poll(pollTimeout,java.util.concurrent.TimeUnit.MILLISECONDS);
                     if(row == null && producerLive.get() == false) {
                         row = q.poll(1,java.util.concurrent.TimeUnit.MILLISECONDS);
                     }
