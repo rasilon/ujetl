@@ -3,4 +3,4 @@ set -e
 
 docker build --rm -t local/c7-buildhost docker/build
 
-docker run -it -v `pwd`:/root/build local/c7-buildhost /root/build/build_util/build_rpm
+docker run -it --rm -v `pwd`:/root/build local/c7-buildhost /root/build/build_util/build_rpm
