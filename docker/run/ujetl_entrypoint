@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+LOG_PROPS=/etc/ujetl/copying_defaults_log4j.xml
+
+cd /var/ujetl
+for file in *.xml
+do
+	/usr/bin/java \
+		-Xms1g \
+		-Xmx2g   \
+		-cp /usr/share/ujetl/lib/CopyingApp.jar \
+		com.rasilon.ujetl.CopyingApp \
+		--log4j "$LOG_PROPS" \
+		--config "$file"
+done
+

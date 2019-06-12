@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+cp *.rpm docker/run/
+docker build --rm -t local/c7-runhost docker/run
