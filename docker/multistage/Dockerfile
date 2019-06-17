@@ -8,17 +8,24 @@ RUN cd ujetl && mvn package
 
 
 
-#FROM centos:centos7
-FROM openjdk:8-alpine
-MAINTAINER Derry Hamilton <derryh@rasilon.net>
+FROM openjdk:8-alpine as runner
+LABEL maintainer="Derry Hamilton <derryh@rasilon.net>"
 
-#RUN yum -y install epel-release
-#RUN yum -y install java-1.8.0-openjdk-devel
+RUN apk update && apk upgrade && apk add bash
 
 RUN mkdir -p /usr/share/ujetl/lib/ /var/ujetl /etc/ujetl
 
 COPY --from=builder  /ujetl/target/CopyingApp-2.*-jar-with-dependencies.jar /usr/share/ujetl/lib/CopyingApp.jar
 COPY --from=builder  /ujetl/install_extra/copying_defaults_log4j.xml /etc/ujetl/
-COPY docker/multistage/ujetl_entrypoint /
-ENTRYPOINT ["/ujetl_entrypoint"]
+COPY ujetl_entrypoint /
+CMD ["/ujetl_entrypoint"]
 
+
+FROM runner as tester
+COPY TEST_config_live.xml /var/ujetl/
+COPY wait_for_postgres /
+RUN apk add postgresql-client
+
+
+FROM runner as deploy
+# Convice docker cloud to build the deploy image

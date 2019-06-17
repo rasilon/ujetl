@@ -1,0 +1,23 @@
+# This is a sample to help put the full application together
+
+version: '3.3'
+
+services:
+    testdb:
+        image: rasilon/ujetl_testdb:latest
+        build:
+            context: ../test_db
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: postgres
+    tests:
+        image: rasilon/ujetl_test:latest
+        build:
+            context: ../multistage
+        links:
+            - "testdb"
+        command: ["/wait_for_postgres", "/ujetl_entrypoint"]
+
+
+

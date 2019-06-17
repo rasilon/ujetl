@@ -4,6 +4,10 @@ set -e
 LOG_PROPS=/etc/ujetl/copying_defaults_log4j.xml
 
 cd /var/ujetl
+echo Currently in `pwd`
+echo processing files:
+ls
+echo Starting run loop
 for file in *.xml
 do
 	/usr/bin/java \
