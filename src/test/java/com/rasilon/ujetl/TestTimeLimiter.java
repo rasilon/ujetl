@@ -18,8 +18,11 @@ public class TestTimeLimiter {
             Thread.sleep(10000);
 
             fail("Sleep wasn't interrupted by the limiter!");
-        } catch(Exception e) {
+        } catch(java.lang.InterruptedException e) {
             // Pass
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception.");
         }
     }
 }
