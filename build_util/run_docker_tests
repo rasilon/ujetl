@@ -1,5 +1,6 @@
 #!/bin/bash
 
+docker build --target tester -t rasilon/ujetl_tester docker/multistage
 docker-compose -f docker/test_compose/docker-compose.yml run --rm tests
 docker-compose -f docker/test_compose/docker-compose.yml down
 
