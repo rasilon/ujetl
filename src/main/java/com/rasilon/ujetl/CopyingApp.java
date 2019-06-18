@@ -110,7 +110,7 @@ public class CopyingApp {
 
 		  	Integer pollTimeout = null;
 	  		try {
-  				pollTimeout = new Integer(config.getString("nRowsToLog"));
+  				pollTimeout = new Integer(config.getString("pollTimeout"));
 				log.info(String.format("%s - Setting Poll timeout to %s milliseconds", jobName, pollTimeout));
 			} catch(Exception e) {
 				pollTimeout = new Integer(1000); // If we don't have a new setting, use the old default
