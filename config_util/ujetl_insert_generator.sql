@@ -14,7 +14,7 @@ declare
     pks text;
 begin
     SELECT
-	  	array_to_string(array_agg(pg_attribute.attname::text ),', ') into pks
+	  	array_to_string(array_agg(quote_ident(pg_attribute.attname::text) ),', ') into pks
 	FROM
 		pg_index,
 	   	pg_class,
@@ -29,39 +29,42 @@ begin
 		pg_attribute.attnum = any(pg_index.indkey)
 		AND indisprimary ;
 
-    header := 'INSERT INTO '||sch||'.'||tabname||E' as t (\n    ';
+    header := 'INSERT INTO '||quote_ident(sch)||'.'||quote_ident(tabname)||E' as t (\n    ';
     for colinfo in 
         select
             *
         from
             information_schema.columns
         where
-            table_schema = 'bi_processing'
-            and table_name = 'player'
+            table_schema = sch
+            and table_name = tabname
         order by ordinal_position
     loop
+        raise info 'Working on %.% (%)',sch,tabname,colinfo::text;
         if not is_first then 
             col_list := col_list || E',\n    ';
             vals := vals || E',\n    ';
             sets := sets || E',\n    ';
             changes := changes || E'\n    OR ';
         end if;
-        col_list := col_list || colinfo.column_name;
-        vals := vals || '?::' || colinfo.data_type;
-        sets := sets || colinfo.column_name || E' = EXCLUDED.' || colinfo.column_name;
-        changes := changes || E't.' || colinfo.column_name || E' IS DISTINCT FROM EXCLUDED.' || colinfo.column_name;
+        col_list := col_list || quote_ident(colinfo.column_name);
+        vals := vals || '?::' || quote_ident(colinfo.data_type);
+        sets := sets || quote_ident(colinfo.column_name) ||
+            E' = EXCLUDED.' || quote_ident(colinfo.column_name);
+        changes := changes || E't.' || quote_ident(colinfo.column_name) ||
+            E' IS DISTINCT FROM EXCLUDED.' || quote_ident(colinfo.column_name);
 
         is_first = false;
     end loop;
 
-    s := header ||
-        col_list ||
+    s := coalesce(header,'header failed') ||
+        coalesce(col_list,'col_list failed') ||
         E'\n)VALUES(\n    ' ||
-        vals ||
-        E')\nON CONFLICT(' || pks || E') DO UPDATE\nSET\n    ' ||
-        sets ||
+        coalesce(vals,'vals failed') ||
+        E')\nON CONFLICT(' || coalesce(pks,'No primary keys found') || E') DO UPDATE\nSET\n    ' ||
+        coalesce(sets,'sets failed') ||
         E'\nWHERE\n    '||
-        changes;
+        coalesce(changes,'changes failed');
     return s;
 end;
 $function$
