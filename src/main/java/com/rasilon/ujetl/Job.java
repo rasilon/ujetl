@@ -154,10 +154,10 @@ public class Job extends Thread {
                     if(rowNum % nRowsToLog == 0) {
                         rowsInserted += arraySum(insertStatement.executeBatch());
                         dConn.commit();
-                        log.info(String.format("%s - Inserted %s of %s notified rows into %s so far",
+                        log.info(String.format("%s - Inserted %s of %s notified rows into %s",
                             jobName,
-                            rowNum,
                             rowsInserted,
+                            rowNum,
                             name));
                     }
                 }

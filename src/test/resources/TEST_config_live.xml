@@ -49,5 +49,21 @@
             OR dest.test_ts = EXCLUDED.test_ts
       </insert>
     </job>
+    <job>
+        <name>denormalise</name>
+        <key>select -1 as key</key>
+        <select>select person_id,fname,lname from normalised_personalia p join normalised_first_names f using(fid) join normalised_last_names l using(lid);</select>
+        <insert>
+            INSERT INTO denormalised_personalia(person_id,fname,lname)
+            values(?::integer,?::text,?::text)
+            ON CONFLICT (person_id) DO UPDATE
+            SET
+                fname = EXCLUDED.fname,
+                lname = EXCLUDED.lname
+            WHERE
+                denormalised_personalia.fname is distinct from EXCLUDED.fname
+                OR denormalised_personalia.lname is distinct from EXCLUDED.lname
+        </insert>
+    </job>
   </jobs>
 </CopyingApp>

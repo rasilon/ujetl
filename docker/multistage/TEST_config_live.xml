@@ -3,14 +3,15 @@
   <hardLimitSeconds>360000</hardLimitSeconds>
   <nRowsToLog>10000</nRowsToLog>
   <blockSize>1000</blockSize>
+  <pollTimeout>500</pollTimeout>
   <source>
-    <dsn>jdbc:postgresql://testdb:5432/test</dsn>
+    <dsn>jdbc:postgresql://localhost:5432/test</dsn>
     <username>test</username>
     <password>test</password>
     <networkTimeout>600000</networkTimeout>
   </source>
   <dest>
-    <dsn>jdbc:postgresql://testdb:5432/test</dsn>
+    <dsn>jdbc:postgresql://localhost:5432/test</dsn>
     <username>test</username>
     <password>test</password>
   </dest>
@@ -47,6 +48,22 @@
             OR dest.test_text = EXCLUDED.test_text
             OR dest.test_ts = EXCLUDED.test_ts
       </insert>
+    </job>
+    <job>
+        <name>denormalise</name>
+        <key>select -1 as key</key>
+        <select>select person_id,fname,lname from normalised_personalia p join normalised_first_names f using(fid) join normalised_last_names l using(lid);</select>
+        <insert>
+            INSERT INTO denormalised_personalia(person_id,fname,lname)
+            values(?::integer,?::text,?::text)
+            ON CONFLICT (person_id) DO UPDATE
+            SET
+                fname = EXCLUDED.fname,
+                lname = EXCLUDED.lname
+            WHERE
+                denormalised_personalia.fname is distinct from EXCLUDED.fname
+                OR denormalised_personalia.lname is distinct from EXCLUDED.lname
+        </insert>
     </job>
   </jobs>
 </CopyingApp>
