@@ -1,6 +1,6 @@
 Summary: Java app to facilitate moving data between databases.
 Name: uJETL
-Version: 2.0.2
+Version: 2.0.3
 Release: 1
 Group: Applications/Database
 License: All rights reserved.
