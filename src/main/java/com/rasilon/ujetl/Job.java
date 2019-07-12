@@ -133,7 +133,7 @@ public class Job extends Thread {
                     if(row == null && producerLive.get() == false) {
                         rowsInserted += arraySum(insertStatement.executeBatch());
                         dConn.commit();
-                        log.info(String.format("%s - Inserted  a total of %s of %s notified rows into %s",jobName,rowNum,rowsInserted,name));
+                        log.info(String.format("%s - Inserted  a total of %s of %s notified rows into %s",jobName,rowsInserted,rowNum,name));
                         return;
                     }
                     if(threadsExit.get()) {
