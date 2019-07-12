@@ -77,7 +77,7 @@ public class Job extends Thread {
         public void run() {
             try {
                 long rowsInserted = 0;
-                long rowNum = 0;
+                long rowsAttempted = 0;
                 long stamp = System.nanoTime();
                 long nstamp;
                 int columnCount = src.getMetaData().getColumnCount();
@@ -95,13 +95,13 @@ public class Job extends Thread {
                         }
                         log.trace("Producer queue full.");
                     }
-                    rowNum++;
-                    if(rowNum % nRowsToLog == 0) {
-                        log.info(String.format("%s - Queued %s rows for %s so far",jobName,rowNum,name));
+                    rowsAttempted++;
+                    if(rowsAttempted % nRowsToLog == 0) {
+                        log.info(String.format("%s - Queued %s rows for %s so far",jobName,rowsAttempted,name));
                     }
                 }
                 producerLive.set(false);
-                log.info(String.format("%s - Queued a total of %s rows for %s",jobName,rowNum,name));
+                log.info(String.format("%s - Queued a total of %s rows for %s",jobName,rowsAttempted,name));
             } catch(Exception e) {
                 producerLive.set(false); // Signal we've exited.
                 threadsExit.set(true); // Signal we've exited.
@@ -122,7 +122,7 @@ public class Job extends Thread {
         }
         public void run() {
             try {
-                long rowNum = 0;
+                long rowsAttempted = 0;
                 long rowsInserted = 0;
 
                 while(true) {
@@ -133,7 +133,7 @@ public class Job extends Thread {
                     if(row == null && producerLive.get() == false) {
                         rowsInserted += arraySum(insertStatement.executeBatch());
                         dConn.commit();
-                        log.info(String.format("%s - Inserted  a total of %s of %s notified rows into %s",jobName,rowsInserted,rowNum,name));
+                        log.info(String.format("%s - Inserted  a total of %s of %s notified rows into %s",jobName,rowsInserted,rowsAttempted,name));
                         return;
                     }
                     if(threadsExit.get()) {
@@ -150,14 +150,14 @@ public class Job extends Thread {
                     }
                     insertStatement.addBatch();
 
-                    rowNum++;
-                    if(rowNum % nRowsToLog == 0) {
+                    rowsAttempted++;
+                    if(rowsAttempted % nRowsToLog == 0) {
                         rowsInserted += arraySum(insertStatement.executeBatch());
                         dConn.commit();
                         log.info(String.format("%s - Inserted %s of %s notified rows into %s",
                             jobName,
                             rowsInserted,
-                            rowNum,
+                            rowsAttempted,
                             name));
                     }
                 }
