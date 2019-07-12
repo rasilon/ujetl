@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION pg_temp.ujetl_insert(sch text, tabname text)
+CREATE OR REPLACE FUNCTION pg_temp.ujetl_select(sch text, tabname text)
  RETURNS text
  LANGUAGE plpgsql
 AS $function$
@@ -29,7 +29,7 @@ begin
         AND pg_attribute.attnum = any(pg_index.indkey)
         AND indisprimary ;
 
-    header := E'INSERT INTO '||quote_ident(sch)||'.'||quote_ident(tabname)||E' as t (\n    ';
+    header := E'SELECT\n    ';
     for colinfo in 
         select
             *
@@ -42,28 +42,17 @@ begin
     loop
         if not is_first then 
             col_list := col_list || E',\n    ';
-            vals := vals || E',\n    ';
-            sets := sets || E',\n    ';
-            changes := changes || E'\n    OR ';
         end if;
         col_list := col_list || quote_ident(colinfo.column_name);
-        vals := vals || '?::' || colinfo.data_type;
-        sets := sets || quote_ident(colinfo.column_name) ||
-            E' = EXCLUDED.' || quote_ident(colinfo.column_name);
-        changes := changes || E't.' || quote_ident(colinfo.column_name) ||
-            E' IS DISTINCT FROM EXCLUDED.' || quote_ident(colinfo.column_name);
 
         is_first = false;
     end loop;
 
-    s := coalesce(header,'header failed') ||
+    s := header ||
         coalesce(col_list,'col_list failed') ||
-        E'\n)VALUES(\n    ' ||
-        coalesce(vals,'vals failed') ||
-        E')\nON CONFLICT(' || coalesce(pks,'No primary keys found') || E') DO UPDATE\nSET\n    ' ||
-        coalesce(sets,'sets failed') ||
-        E'\nWHERE\n    '||
-        coalesce(changes,'changes failed');
+        E'\nFROM\n    ' ||
+        quote_ident(sch)||'.'||quote_ident(tabname)||E' as t \n    '||
+        E'WHERE\n    insert criteria here >= ?::datatype';
     return s;
 end;
 $function$
