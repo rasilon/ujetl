@@ -44,6 +44,9 @@ CREATE TABLE denormalised_personalia(
     lname text
 );
 
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO test;
+GRANT SELECT,INSERT,UPDATE ON denormalised_personalia TO test;
+
 
 \c postgres
 CREATE TABLE public.container_ready AS SELECT 1 FROM(VALUES(1)) AS a(a);

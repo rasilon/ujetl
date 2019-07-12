@@ -50,6 +50,39 @@
       </insert>
     </job>
     <job>
+      <name>test upsert</name>
+      <key>select -1 as key</key>
+      <select>
+          select
+            id,
+            test_int,
+            test_text,
+            test_ts
+          from
+          public.source where id > ?::bigint</select>
+      <insert>
+          insert into public.dest(
+            id,
+            test_int,
+            test_text,
+            test_ts
+        )values(
+            ?::bigint,
+            ?::integer,
+            ?::text,
+            ?::timestamp with time zone
+        )ON CONFLICT(id) DO UPDATE
+        set
+            test_int = EXCLUDED.test_int,
+            test_text = EXCLUDED.test_text,
+            test_ts = EXCLUDED.test_ts
+        WHERE
+            dest.test_int IS DISTINCT FROM EXCLUDED.test_int
+            OR dest.test_text IS DISTINCT FROM EXCLUDED.test_text
+            OR dest.test_ts IS DISTINCT FROM EXCLUDED.test_ts
+      </insert>
+    </job>
+    <job>
         <name>denormalise</name>
         <key>select -1 as key</key>
         <select>select person_id,fname,lname from normalised_personalia p join normalised_first_names f using(fid) join normalised_last_names l using(lid);</select>
