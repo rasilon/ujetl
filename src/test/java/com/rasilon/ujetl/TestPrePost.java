@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-public class TestJob {
+public class TestPrePost {
 
     private static String jdbcURL = "jdbc:h2:mem:dbtest";
     @Test
@@ -23,7 +23,7 @@ public class TestJob {
     }
 
     @Test
-    public void testJob() {
+    public void testPrePost() {
         try (
                 Connection src  = DriverManager.getConnection(jdbcURL, "sa", "");
                 Connection dest = DriverManager.getConnection(jdbcURL, "sa", "");
@@ -44,9 +44,9 @@ public class TestJob {
                 "jUnit Test Job",
                 "SELECT -1 AS key",
                 "SELECT id,dat FROM src WHERE id > ?",
-                "INSERT INTO dest VALUES(?,?)",
-                null,
-                null,
+                "INSERT INTO tmp_dest VALUES(?,?)",
+                "CREATE TEMP TABLE tmp_dest(id bigint not null primary key, dat varchar);",
+                "INSERT INTO dest SELECT * from tmp_dest;",
                 100,
                 100,
                 100

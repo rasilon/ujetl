@@ -29,6 +29,8 @@ public class Job extends Thread {
     String key;
     String select;
     String insert;
+    String preTarget;
+    String postTarget;
     Integer nRowsToLog;
     Integer blockSize;
     Integer pollTimeout;
@@ -38,7 +40,7 @@ public class Job extends Thread {
     AtomicBoolean threadsExit = new AtomicBoolean(false);;
 
 
-    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,Integer nRowsToLog,Integer blockSize,Integer pollTimeout) {
+    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,String preTarget,String postTarget,Integer nRowsToLog,Integer blockSize,Integer pollTimeout) {
         this.sConn = sConn;
         this.dConn = dConn;
         this.name = name;
@@ -46,6 +48,8 @@ public class Job extends Thread {
         this.key = key;
         this.select = select;
         this.insert = insert;
+        this.preTarget = preTarget;
+        this.postTarget = postTarget;
         this.nRowsToLog = nRowsToLog;
         this.blockSize = blockSize;
         this.pollTimeout = pollTimeout;
@@ -169,11 +173,20 @@ public class Job extends Thread {
         }
     }
 
+    // Outer run
     public void run() {
         try {
             ResultSet rs;
 
             log.info(String.format("%s - Processing table: %s",jobName,name));
+            if(preTarget != null){
+                log.debug("Trying to execute preTarget SQL");
+                PreparedStatement s = dConn.prepareStatement(preTarget);
+                s.executeUpdate();
+                s.close();
+            }else{
+                log.debug("No preTarget; skipping.");
+            }
 
             log.debug("Trying to execute: "+key);
             PreparedStatement keyStatement = dConn.prepareStatement(key);
@@ -210,6 +223,16 @@ public class Job extends Thread {
 
             p.join();
             c.join();
+
+            if(postTarget != null){
+                log.debug("Trying to execute postTarget SQL");
+                PreparedStatement s = dConn.prepareStatement(postTarget);
+                s.executeUpdate();
+                s.close();
+            }else{
+                log.debug("No postTarget; skipping.");
+            }
+
 
         } catch(InterruptedException e) {
             throw new RuntimeException(e);

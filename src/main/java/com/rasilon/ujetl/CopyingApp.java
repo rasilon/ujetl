@@ -131,7 +131,10 @@ public class CopyingApp {
                     String tabKey = config.getString("jobs.job("+i+").key");
                     String tabSelect = config.getString("jobs.job("+i+").select");
                     String tabInsert = config.getString("jobs.job("+i+").insert");
-                    Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize,pollTimeout);
+                    String preTarget = config.getString("jobs.job("+i+").preTarget");
+                    String postTarget = config.getString("jobs.job("+i+").postTarget");
+
+                    Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,preTarget,postTarget,nRowsToLog,blockSize,pollTimeout);
                     j.start();
                     j.join();
 
@@ -141,7 +144,9 @@ public class CopyingApp {
                 String tabKey = config.getString("jobs.job.key");
                 String tabSelect = config.getString("jobs.job.select");
                 String tabInsert = config.getString("jobs.job.insert");
-                Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,nRowsToLog,blockSize,pollTimeout);
+                String preTarget = config.getString("jobs.job.preTarget");
+                String postTarget = config.getString("jobs.job.postTarget");
+                Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,preTarget,postTarget,nRowsToLog,blockSize,pollTimeout);
                 j.start();
                 j.join();
             } else {
