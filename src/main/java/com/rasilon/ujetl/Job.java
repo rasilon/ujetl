@@ -76,7 +76,7 @@ public class Job extends Thread {
         public Producer(ResultSet src,BlockingQueue q) {
             this.src = src;
             this.q = q;
-            this.setName(String.format("%s-%s-Consumer",jobName,name));
+            this.setName(String.format("%s-%s-Producer",jobName,name));
         }
         public void run() {
             try {
