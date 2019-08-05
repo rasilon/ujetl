@@ -184,6 +184,7 @@ public class Job extends Thread {
                 PreparedStatement s = dConn.prepareStatement(preTarget);
                 s.executeUpdate();
                 s.close();
+                dConn.commit();
             }else{
                 log.info("No preTarget; skipping.");
             }
@@ -229,6 +230,7 @@ public class Job extends Thread {
                 PreparedStatement s = dConn.prepareStatement(postTarget);
                 s.executeUpdate();
                 s.close();
+                dConn.commit();
             }else{
                 log.info("No postTarget; skipping.");
             }
