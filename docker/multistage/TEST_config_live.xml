@@ -98,5 +98,59 @@
                 OR denormalised_personalia.lname is distinct from EXCLUDED.lname
         </insert>
     </job>
+    <job>
+      <name>test pre post</name>
+      <key>select -1 as key</key>
+      <select>
+          select
+            id,
+            test_int,
+            test_text,
+            test_ts
+          from
+          public.source where id > ?::bigint
+      </select>
+      <preTarget>
+          drop table if exists tmp_dest;
+          create temp table tmp_dest(
+            id bigint,
+            test_int integer,
+            test_text text,
+            test_ts timestamp with time zone
+          );
+      </preTarget>
+      <insert>
+          insert into tmp_dest(
+            id,
+            test_int,
+            test_text,
+            test_ts
+        )values(
+            ?::bigint,
+            ?::integer,
+            ?::text,
+            ?::timestamp with time zone
+        )
+      </insert>
+      <insert>
+        insert into public.dest(
+            id,
+            test_int,
+            test_text,
+            test_ts
+        )
+        select id,test_int,test_text,test_ts
+        from tmp_dest
+        ON CONFLICT(id) DO UPDATE
+        set
+            test_int = EXCLUDED.test_int,
+            test_text = EXCLUDED.test_text,
+            test_ts = EXCLUDED.test_ts
+        WHERE
+            dest.test_int IS DISTINCT FROM EXCLUDED.test_int
+            OR dest.test_text IS DISTINCT FROM EXCLUDED.test_text
+            OR dest.test_ts IS DISTINCT FROM EXCLUDED.test_ts
+      </insert>
+    </job>
   </jobs>
 </CopyingApp>
