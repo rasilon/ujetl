@@ -133,8 +133,25 @@ public class CopyingApp {
                     String tabInsert = config.getString("jobs.job("+i+").insert");
                     String preTarget = config.getString("jobs.job("+i+").preTarget");
                     String postTarget = config.getString("jobs.job("+i+").postTarget");
+                    String identifySourceSQL = config.getString("jobs.job.identifySourceSQL");
+                    String identifyDestinationSQL = config.getString("jobs.job.identifyDestinationSQL");
 
-                    Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,preTarget,postTarget,nRowsToLog,blockSize,pollTimeout);
+                    Job j = new Job(
+                        sConn,
+                        dConn,
+                        tabName,
+                        jobName,
+                        tabKey,
+                        tabSelect,
+                        tabInsert,
+                        preTarget,
+                        postTarget,
+                        nRowsToLog,
+                        blockSize,
+                        pollTimeout,
+                        identifySourceSQL,
+                        identifyDestinationSQL
+                        );
                     j.start();
                     j.join();
 
@@ -146,7 +163,26 @@ public class CopyingApp {
                 String tabInsert = config.getString("jobs.job.insert");
                 String preTarget = config.getString("jobs.job.preTarget");
                 String postTarget = config.getString("jobs.job.postTarget");
-                Job j = new Job(sConn,dConn,tabName,jobName,tabKey,tabSelect,tabInsert,preTarget,postTarget,nRowsToLog,blockSize,pollTimeout);
+                String identifySourceSQL = config.getString("jobs.job.identifySourceSQL");
+                String identifyDestinationSQL = config.getString("jobs.job.identifyDestinationSQL");
+
+
+                Job j = new Job(
+                    sConn,
+                    dConn,
+                    tabName,
+                    jobName,
+                    tabKey,
+                    tabSelect,
+                    tabInsert,
+                    preTarget,
+                    postTarget,
+                    nRowsToLog,
+                    blockSize,
+                    pollTimeout,
+                    identifySourceSQL,
+                    identifyDestinationSQL
+                    );
                 j.start();
                 j.join();
             } else {

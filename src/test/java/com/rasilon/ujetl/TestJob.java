@@ -49,7 +49,9 @@ public class TestJob {
                 null,
                 100,
                 100,
-                100
+                100,
+                "select 'PID:'||session_id()",
+                "select 'PID:'||session_id()"
             );
             j.start();
             j.join();

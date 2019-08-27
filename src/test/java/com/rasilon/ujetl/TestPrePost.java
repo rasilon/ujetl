@@ -49,7 +49,9 @@ public class TestPrePost {
                 "INSERT INTO dest SELECT * from tmp_dest;",
                 100,
                 100,
-                100
+                100,
+                "select 'PID:'||session_id()",
+                "select 'PID:'||session_id()"
             );
             j.start();
             j.join();

@@ -18,6 +18,8 @@
   <jobs>
     <job>
       <name>test</name>
+      <identifySourceSQL>select 'PID:'||pg_backend_pid()</identifySourceSQL>
+      <identifyDestinationSQL>select 'PID:'||pg_backend_pid()</identifyDestinationSQL>
       <key>select coalesce(-1,max(id),-1) as key from dest</key>
       <select>
           select

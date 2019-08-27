@@ -18,6 +18,8 @@
   <jobs>
     <job>
       <name>test</name>
+      <identifySourceSQL>select 'PID:'||pg_backend_pid()</identifySourceSQL>
+      <identifyDestinationSQL>select 'PID:'||pg_backend_pid()</identifyDestinationSQL>
       <key>select coalesce(-1,max(id),-1) as key from dest</key>
       <select>
           select
@@ -51,6 +53,8 @@
     </job>
     <job>
       <name>test upsert</name>
+      <identifySourceSQL>select 'PID:'||pg_backend_pid()</identifySourceSQL>
+      <identifyDestinationSQL>select 'PID:'||pg_backend_pid()</identifyDestinationSQL>
       <key>select -1 as key</key>
       <select>
           select
@@ -84,6 +88,8 @@
     </job>
     <job>
         <name>denormalise</name>
+      <identifySourceSQL>select 'PID:'||pg_backend_pid()</identifySourceSQL>
+      <identifyDestinationSQL>select 'PID:'||pg_backend_pid()</identifyDestinationSQL>
         <key>select -1 as key</key>
         <select>select person_id,fname,lname from normalised_personalia p join normalised_first_names f using(fid) join normalised_last_names l using(lid) where ?::integer is not null;</select>
         <insert>

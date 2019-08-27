@@ -22,25 +22,29 @@ import org.apache.logging.log4j.Logger;
 public class Job extends Thread {
     static Logger log = org.apache.logging.log4j.LogManager.getLogger(Job.class);
 
-    Connection sConn;
-    Connection dConn;
-    String name;
-    String jobName;
-    String key;
-    String select;
-    String insert;
-    String preTarget;
-    String postTarget;
-    Integer nRowsToLog;
-    Integer blockSize;
-    Integer pollTimeout;
+    private Connection sConn;
+    private Connection dConn;
+    private String name;
+    private String jobName;
+    private String key;
+    private String select;
+    private String insert;
+    private String preTarget;
+    private String postTarget;
+    private Integer nRowsToLog;
+    private Integer blockSize;
+    private Integer pollTimeout;
+    private String identifySourceSQL;
+    private String identifyDestinationSQL;
 
-    BlockingQueue<List<String>> resultBuffer;
-    AtomicBoolean producerLive;
-    AtomicBoolean threadsExit = new AtomicBoolean(false);;
+    private BlockingQueue<List<String>> resultBuffer;
+    private AtomicBoolean producerLive;
+    private AtomicBoolean threadsExit = new AtomicBoolean(false);;
+    private String sourceID;
+    private String destID;
 
 
-    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,String preTarget,String postTarget,Integer nRowsToLog,Integer blockSize,Integer pollTimeout) {
+    public Job(Connection sConn,Connection dConn,String name,String jobName,String key,String select,String insert,String preTarget,String postTarget,Integer nRowsToLog,Integer blockSize,Integer pollTimeout,String identifySourceSQL, String identifyDestinationSQL) {
         this.sConn = sConn;
         this.dConn = dConn;
         this.name = name;
@@ -53,6 +57,8 @@ public class Job extends Thread {
         this.nRowsToLog = nRowsToLog;
         this.blockSize = blockSize;
         this.pollTimeout = pollTimeout;
+        this.identifySourceSQL = identifySourceSQL;
+        this.identifyDestinationSQL = identifyDestinationSQL;
 
         resultBuffer = new ArrayBlockingQueue<List<String>>( 3 * blockSize);
         producerLive = new AtomicBoolean(true);
@@ -178,7 +184,20 @@ public class Job extends Thread {
         try {
             ResultSet rs;
 
-            log.info(String.format("%s - Processing table: %s",jobName,name));
+            if(identifySourceSQL != null) sourceID = getSingleString(identifySourceSQL,sConn);
+            if(identifyDestinationSQL != null) destID = getSingleString(identifyDestinationSQL,dConn);
+
+            if(sourceID != null || destID != null){
+                log.info(String.format(
+                            "%s - Processing table: %s with source: %s, dest: %s",
+                            jobName,
+                            name,
+                            sourceID==null?"":sourceID,
+                            destID==null?"":destID
+                            ));
+            }else{
+                log.info(String.format("%s - Processing table: %s",jobName,name));
+            }
             if(preTarget != null){
                 log.info("Trying to execute preTarget SQL");
                 PreparedStatement s = dConn.prepareStatement(preTarget);
@@ -242,4 +261,16 @@ public class Job extends Thread {
             throw new RuntimeException(e);
         }
     }
+
+    private String getSingleString(String sql, Connection conn){
+        try{
+            PreparedStatement s = conn.prepareStatement(sql);
+            ResultSet r = s.executeQuery();
+            r.next();
+            return r.getString(1);
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
