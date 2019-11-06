@@ -199,13 +199,13 @@ public class Job extends Thread {
                 log.info(String.format("%s - Processing table: %s",jobName,name));
             }
             if(preTarget != null){
-                log.info("Trying to execute preTarget SQL");
+                log.info(String.format("%s - Trying to execute preTarget SQL",jobName));
                 PreparedStatement s = dConn.prepareStatement(preTarget);
                 s.executeUpdate();
                 s.close();
                 dConn.commit();
             }else{
-                log.info("No preTarget; skipping.");
+                log.info(String.format("%s - No preTarget; skipping.",jobName));
             }
 
             log.debug("Trying to execute: "+key);
@@ -245,13 +245,13 @@ public class Job extends Thread {
             c.join();
 
             if(postTarget != null){
-                log.info("Trying to execute postTarget SQL");
+                log.info(String.format("%s - Trying to execute postTarget SQL",jobName));
                 PreparedStatement s = dConn.prepareStatement(postTarget);
                 s.executeUpdate();
                 s.close();
                 dConn.commit();
             }else{
-                log.info("No postTarget; skipping.");
+                log.info(String.format("%s - No postTarget; skipping.",jobName));
             }
 
 
