@@ -1,9 +1,9 @@
 FROM centos:centos7 as builder
-RUN yum -y install epel-release java-1.8.0-openjdk-devel
+RUN yum -y install epel-release java-11-openjdk-devel
 RUN yum -y groupinstall 'Development Tools'
 RUN yum -y install git maven
-RUN git clone https://github.com/rasilon/ujetl.git
-RUN cd ujetl && mvn package
+RUN git clone --single-branch --branch dev https://github.com/rasilon/ujetl.git
+RUN cd ujetl && mvn -e package
 
 
 
