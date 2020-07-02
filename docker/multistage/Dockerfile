@@ -10,7 +10,7 @@ RUN cd ujetl && JAVA_HOME=/usr/lib/jvm/java-11 mvn -e package
 
 
 
-FROM openjdk:11-alpine as runner
+FROM openjdk:11 as runner
 LABEL maintainer="Derry Hamilton <derryh@rasilon.net>"
 
 RUN apk update && apk upgrade && apk add bash
