@@ -10,7 +10,7 @@ ls
 echo Starting run loop
 for file in *.xml
 do
-	/usr/bin/java \
+	/usr/local/openjdk-11/bin/java \
 		-Xms1g \
 		-Xmx2g   \
 		-cp /usr/share/ujetl/lib/CopyingApp.jar \

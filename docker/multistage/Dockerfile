@@ -26,7 +26,7 @@ CMD ["/ujetl_entrypoint"]
 FROM runner as tester
 COPY TEST_config_live.xml /var/ujetl/
 COPY wait_for_postgres /
-RUN apt install postgresql-client
+RUN apt-get  install -y postgresql-client
 
 
 FROM runner as deploy
