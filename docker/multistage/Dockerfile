@@ -4,7 +4,7 @@ RUN yum -y groupinstall 'Development Tools'
 RUN yum -y install git maven
 RUN alternatives --set javac /usr/lib/jvm/java-11-openjdk-11.0.7.10-1.el8_1.x86_64/bin/javac
 RUN alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.7.10-1.el8_1.x86_64/bin/java
-RUN git clone --single-branch --branch dev https://github.com/rasilon/ujetl.git
+RUN git clone --single-branch --branch master https://github.com/rasilon/ujetl.git
 RUN cd ujetl && JAVA_HOME=/usr/lib/jvm/java-11 mvn -e package
 
 
