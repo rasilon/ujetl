@@ -16,6 +16,7 @@ do
 		-cp /usr/share/ujetl/lib/CopyingApp.jar \
 		com.rasilon.ujetl.CopyingApp \
 		--log4j "$LOG_PROPS" \
+		-Dlog4j.configurationFile="$LOG_PROPS" \
 		--config "$file"
 done
 
