@@ -13,7 +13,7 @@ RUN cd ujetl && JAVA_HOME=/usr/lib/jvm/java-11 mvn -e package
 FROM openjdk:11 as runner
 LABEL maintainer="Derry Hamilton <derryh@rasilon.net>"
 
-RUN apk update && apk upgrade && apk add bash
+RUN apt update && apt upgrade && apt install bash
 
 RUN mkdir -p /usr/share/ujetl/lib/ /var/ujetl /etc/ujetl
 
