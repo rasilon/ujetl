@@ -1,14 +1,8 @@
-FROM centos:centos8 as builder
-RUN yum -y install epel-release java-11-openjdk-devel
-RUN yum -y groupinstall 'Development Tools'
-RUN yum -y install git maven
-RUN alternatives --set javac /usr/lib/jvm/java-11-openjdk-11.*/bin/javac
-RUN alternatives --set java /usr/lib/jvm/java-11-openjdk-11.*/bin/java
-RUN git clone --single-branch --branch master https://github.com/rasilon/ujetl.git
-RUN cd ujetl && JAVA_HOME=/usr/lib/jvm/java-11 mvn -e package
-
-
-
+FROM ubuntu:22.04 as builder
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get -y install openjdk-19-jdk-headless maven git
+RUN git clone --single-branch --branch main https://github.com/rasilon/ujetl.git
+RUN cd ujetl && mvn -e package
 
 FROM openjdk:11 as runner
 LABEL maintainer="Derry Hamilton <derryh@rasilon.net>"
