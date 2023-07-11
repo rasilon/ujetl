@@ -34,10 +34,6 @@ public class CopyingApp {
     public static void main(String[] args) {
         CopyingAppCommandParser cli = new CopyingAppCommandParser(args);
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-        String log4jConfigLocation = cli.getLog4jConfigFile();
-        File file = new File(log4jConfigLocation);
-        context.setConfigLocation(file.toURI());
-        System.out.println("Config set from "+file.toURI());
 
         CopyingApp app = new CopyingApp(cli);
         try {
