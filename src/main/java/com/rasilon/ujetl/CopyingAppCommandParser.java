@@ -12,7 +12,7 @@ public class CopyingAppCommandParser {
 	private String configFile;
 	
 	@Parameter(names = {"-log4j","--log4j"}, description = "Log4J config file for this run")
-	private String log4jConfigFile = "/etc/ppl/default_log4j_config.properties";
+	private String log4jConfigFile = "/etc/ujetl/default_log4j_config.properties";
 
 	public CopyingAppCommandParser(String[] args) {
 		super();
