@@ -1,0 +1,4 @@
+#!/bin/bash
+docker push rasilon/ujetl:latest
+docker push rasilon/ujetl:$(xpath -q -e '/project/version/text()' pom.xml)
+
