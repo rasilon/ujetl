@@ -42,7 +42,7 @@ public class TestJob {
                 dest,
                 "jUnit Test Config",
                 "jUnit Test Job",
-                "SELECT -1 AS key",
+                "SELECT -1 AS \"key\"",
                 "SELECT id,dat FROM src WHERE id > ?",
                 "INSERT INTO dest VALUES(?,?)",
                 null,
