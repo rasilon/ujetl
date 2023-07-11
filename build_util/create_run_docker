@@ -1,2 +1,3 @@
 #!/bin/bash
 docker build --target deploy -t rasilon/ujetl docker/multistage
+docker tag rasilon/ujetl:latest rasilon/ujetl:$(xpath -q -e '/project/version/text()' pom.xml)
