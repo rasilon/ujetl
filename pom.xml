@@ -78,6 +78,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <artifactId>postgresql</artifactId>
       <version>42.4.3</version>
     </dependency>
+    <dependency>
+      <groupId>net.sourceforge.csvjdbc</groupId>
+      <artifactId>csvjdbc</artifactId>
+      <version>1.0.40</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

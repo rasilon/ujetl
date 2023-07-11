@@ -75,6 +75,7 @@ public class CopyingApp {
 
             Configuration config = configs.xml(cli.getConfigFile());
 
+            loadDrivers(config);
             String hardLimitSeconds = config.getString("hardLimitSeconds");
             if(hardLimitSeconds != null) {
                 TimeLimiter hardLimit = new TimeLimiter(Integer.decode(hardLimitSeconds).intValue(),true);
@@ -239,5 +240,12 @@ public class CopyingApp {
         }
 
         return c;
+    }
+
+    private void loadDrivers(Configuration config){
+        String[] drivers = config.get(String[].class, "drivers.driver");
+        for(String d:drivers){
+            log.info("Would load "+d);
+        }
     }
 }
