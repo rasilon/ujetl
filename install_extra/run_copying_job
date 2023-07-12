@@ -30,7 +30,7 @@ fi
 /usr/bin/java \
     -Xms1g \
     -Xmx2g   \
-    -Dlog4j.configuration=file:"$LOG_PROPS" \
+    -Dlog4j.configurationFile="$LOG_PROPS" \
     -cp /usr/share/ujetl/lib/CopyingApp.jar \
     com.rasilon.ujetl.CopyingApp \
     --config "/etc/ujetl/${JOBNAME}_config_live.xml"
