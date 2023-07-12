@@ -34,10 +34,6 @@ public class CopyingApp {
     public static void main(String[] args) {
         CopyingAppCommandParser cli = new CopyingAppCommandParser(args);
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-        String log4jConfigLocation = cli.getLog4jConfigFile();
-        File file = new File(log4jConfigLocation);
-        context.setConfigLocation(file.toURI());
-        System.out.println("Config set from "+file.toURI());
 
         CopyingApp app = new CopyingApp(cli);
         try {
@@ -79,6 +75,7 @@ public class CopyingApp {
 
             Configuration config = configs.xml(cli.getConfigFile());
 
+            loadDrivers(config);
             String hardLimitSeconds = config.getString("hardLimitSeconds");
             if(hardLimitSeconds != null) {
                 TimeLimiter hardLimit = new TimeLimiter(Integer.decode(hardLimitSeconds).intValue(),true);
@@ -108,14 +105,14 @@ public class CopyingApp {
                 log.info(String.format("%s - Setting Row count interval to default of 100 rows.",jobName));
             }
 
-		  	Integer pollTimeout = null;
-	  		try {
-  				pollTimeout = new Integer(config.getString("pollTimeout"));
-				log.info(String.format("%s - Setting Poll timeout to %s milliseconds", jobName, pollTimeout));
-			} catch(Exception e) {
-				pollTimeout = new Integer(1000); // If we don't have a new setting, use the old default
-				log.info(String.format("%s - Setting poll timeout to default of 1 second.",jobName));
-			}
+            Integer pollTimeout = null;
+            try {
+                pollTimeout = new Integer(config.getString("pollTimeout"));
+                log.info(String.format("%s - Setting Poll timeout to %s milliseconds", jobName, pollTimeout));
+            } catch(Exception e) {
+                pollTimeout = new Integer(1000); // If we don't have a new setting, use the old default
+                log.info(String.format("%s - Setting poll timeout to default of 1 second.",jobName));
+            }
 
 
 
@@ -151,7 +148,7 @@ public class CopyingApp {
                         pollTimeout,
                         identifySourceSQL,
                         identifyDestinationSQL
-                        );
+                    );
                     j.start();
                     j.join();
 
@@ -182,7 +179,7 @@ public class CopyingApp {
                     pollTimeout,
                     identifySourceSQL,
                     identifyDestinationSQL
-                    );
+                );
                 j.start();
                 j.join();
             } else {
@@ -243,5 +240,22 @@ public class CopyingApp {
         }
 
         return c;
+    }
+
+    // Even with JDBC 4, some drivers don't play nicely with whatever
+    // the classloaders are up to.  So this allows us to force it the
+    // old fashioned way, and works around the
+    // "But it works fine when it's the /only/ driver!"
+    // cross-database problem
+    private void loadDrivers(Configuration config) {
+        String[] drivers = config.get(String[].class, "drivers.driver");
+        for(String d:drivers) {
+            try {
+                Class.forName(d);
+                log.info("Preloaded driver  "+d);
+            } catch(ClassNotFoundException e) {
+                log.error("Could not preload driver "+d,e);
+            }
+        }
     }
 }

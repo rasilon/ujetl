@@ -30,9 +30,9 @@ fi
 /usr/bin/java \
     -Xms1g \
     -Xmx2g   \
+    -Dlog4j.configuration=file:"$LOG_PROPS" \
     -cp /usr/share/ujetl/lib/CopyingApp.jar \
     com.rasilon.ujetl.CopyingApp \
-    --log4j "$LOG_PROPS" \
     --config "/etc/ujetl/${JOBNAME}_config_live.xml"
 
 #rm -f $LOCKFILE

@@ -23,8 +23,4 @@ public class CopyingAppCommandParser {
 		return configFile;
 	}
 
-	public String getLog4jConfigFile() {
-		return log4jConfigFile;
-	}
-	
 }

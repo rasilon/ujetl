@@ -4,6 +4,11 @@
   <nRowsToLog>10000</nRowsToLog>
   <blockSize>1000</blockSize>
   <pollTimeout>500</pollTimeout>
+  <drivers>
+    <driver>org.postgresql.Driver</driver>
+    <driver>org.relique.jdbc.csv.CsvDriver</driver>
+  </drivers>
+
   <source>
     <dsn>jdbc:postgresql://testdb:5432/test</dsn>
     <username>test</username>

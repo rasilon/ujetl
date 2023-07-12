@@ -13,15 +13,12 @@ public class TestParser {
     public void test001Parset() {
         try {
             String[] args = {
-                "--log4j",
-                "log4j_test_banana.xml",
                 "--config",
                 "config_test_banana.xml"
             };
             CopyingAppCommandParser p = new CopyingAppCommandParser(args);
 
             assertEquals(p.getConfigFile(),"config_test_banana.xml");
-            assertEquals(p.getLog4jConfigFile(),"log4j_test_banana.xml");
 
         } catch(Exception e) {
             fail(e.toString());
