@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestConfig {
 
     @Test
-    public void test002verifyH2Works() {
+    public void test001VerifyArrayOfDrivers() {
         try {
             Configurations configs = new Configurations();
             Configuration config = configs.xml("TEST_config_live.xml");
